@@ -2,10 +2,10 @@ package com.chocobo;
 
 public class User {
 
-	String userType;
-	String productType;
-	int longTimeJoined;
-	String amount;
+	private String userType;
+	private String productType;
+	private int longTimeJoined;
+	private String amount;
 	
 	public String getUserType() {
 		return userType;

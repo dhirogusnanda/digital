@@ -50,7 +50,7 @@ public class App
 					
 					break;
 				case 2:
-					System.out.println("no answer 2");
+					System.out.println("Sorry, Dont Understand the question (No Answer)");
 					break;
 				case 3:
 					System.out.println("Amount : $" + geneatePayableAmount(registerUserForTest(sc)));

@@ -50,27 +50,40 @@ public class AppTest
 //        System.setIn(new ByteArrayInputStream(userInteract.getBytes()));
 //        App.start();
         
-    	// test case with one row on map
-        Map<String, String> storedMap = new HashMap<String, String>();
-        storedMap.put("key1", "value1");
-        assertEquals("key1=key1\\nvalue1=key1", App.load(storedMap));
+    	// test case with one row on map and one index
+        Map<Integer, Map<String, String>> storedMap = new HashMap<Integer, Map<String,String>>();
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put("key1", "value1");
+        storedMap.put(1, mapValue);
+        assertEquals("key1=value1", App.load(storedMap));
     }
     
     public void testAnswer1Case2() {
-    	// test case with two rows on map
-    	Map<String, String> storedMap = new HashMap<String, String>();
-        storedMap.put("key1", "value1");
-        storedMap.put("key2", "value2");
-        assertEquals("key1=key1;key2=key2\\nvalue1=key1\\nvalue2=key2", App.load(storedMap));
+    	// test case with two rows on index zero and one row on index one
+        Map<Integer, Map<String, String>> storedMap = new HashMap<Integer, Map<String,String>>();
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put("key1", "value1");
+        mapValue.put("key2", "value2");
+        Map<String, String> mapValue2 = new HashMap<String, String>();
+        mapValue2.put("keyA", "valueA");
+        storedMap.put(0, mapValue);
+        storedMap.put(1, mapValue2);
+        assertEquals("key1=value1;key2=value2\\nkeyA=valueA", App.load(storedMap));
     }
     
     public void testAnswer1Case3() {
-    	// test case with three rows on map
-    	Map<String, String> storedMap = new HashMap<String, String>();
-        storedMap.put("key1", "value1");
-        storedMap.put("key2", "value2");
-        storedMap.put("key3", "value3");
-        assertEquals("key1=key1;key2=key2;key3=key3\\nvalue1=key1\\nvalue2=key2\\nvalue3=key3", App.load(storedMap));
+    	// test case with one row on 3 different index
+    	Map<Integer, Map<String, String>> storedMap = new HashMap<Integer, Map<String,String>>();
+        Map<String, String> mapValue = new HashMap<String, String>();
+        mapValue.put("key1", "value1");
+        Map<String, String> mapValue2 = new HashMap<String, String>();
+        mapValue2.put("keyA", "valueA");
+        Map<String, String> mapValue3 = new HashMap<String, String>();
+        mapValue3.put("keyS", "valueS");
+        storedMap.put(0, mapValue);
+        storedMap.put(1, mapValue2);
+        storedMap.put(2, mapValue3);
+        assertEquals("key1=value1\\nkeyA=valueA\\nkeyS=valueS", App.load(storedMap));
     }
     
     public void testAllAnswer2() {
@@ -81,12 +94,12 @@ public class AppTest
         // there are no coverage for this since i dont know the answer
     }
     
-    public void testAnswer3Case1() {
+    public void testAnswer3AffiliateCase1() {
 //    	String userInteract = "a\n3\nemployee\no\na\n2\na\n900\nq";
 //        System.setIn(new ByteArrayInputStream(userInteract.getBytes()));
 //        App.start();
         
-        // test case for user type as affiliate
+        // test case for user type as affiliate with the product is not groceries and the bought amount more than 100
         User user = new User();
         user.setAmount("900");
         user.setUserType("affiliate");
@@ -95,8 +108,22 @@ public class AppTest
         assertEquals("765.0", App.geneatePayableAmount(user));
     }
     
-    public void testAnswer3Case2() {
-        // test case for user type as affiliate but the product is groceries
+    public void testAnswer3AffiliateCase2() {
+//    	String userInteract = "a\n3\nemployee\no\na\n2\na\n900\nq";
+//        System.setIn(new ByteArrayInputStream(userInteract.getBytes()));
+//        App.start();
+        
+        // test case for user type as affiliate with the product is not groceries and the bought amount less than 100
+        User user = new User();
+        user.setAmount("80");
+        user.setUserType("affiliate");
+        user.setProductType("gro");
+        user.setLongTimeJoined(2);
+        assertEquals("72.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3AffiliateCase3() {
+        // test case for user type as affiliate but the product is groceries and the bought amount more than 100 
     	User user = new User();
         user.setAmount("900");
         user.setUserType("affiliate");
@@ -105,28 +132,18 @@ public class AppTest
         assertEquals("855.0", App.geneatePayableAmount(user));
     }
     
-    public void testAnswer3Case3() {
-        // test case for user type as customer with long time joined >= 2 years
+    public void testAnswer3AffiliateCase4() {
+        // test case for user type as affiliate but the product is groceries and the bought amount less than 100 
     	User user = new User();
-        user.setAmount("900");
-        user.setUserType("customer");
-        user.setProductType("etc");
+        user.setAmount("80");
+        user.setUserType("affiliate");
+        user.setProductType("groceries");
         user.setLongTimeJoined(2);
-        assertEquals("810.0", App.geneatePayableAmount(user));
+        assertEquals("80.0", App.geneatePayableAmount(user));
     }
     
-    public void testAnswer3Case4() {
-        // test case for user type as customer with long time joined less than 2 years
-    	User user = new User();
-        user.setAmount("900");
-        user.setUserType("customer");
-        user.setProductType("etc");
-        user.setLongTimeJoined(1);
-        assertEquals("855.0", App.geneatePayableAmount(user));
-    }
-    
-    public void testAnswer3Case5() {
-        // test case for user type as employee
+    public void testAnswer3EmployeeCase1() {
+        // test case for user type as employee with the product is not groceries and the bought amount more than 100
     	User user = new User();
         user.setAmount("900");
         user.setUserType("employee");
@@ -135,13 +152,133 @@ public class AppTest
         assertEquals("585.0", App.geneatePayableAmount(user));
     }
     
-    public void testAnswer3Case6() {
-        // test case for user type nor employee, customer, affiliate
+    public void testAnswer3EmployeeCase2() {
+        // test case for user type as employee with the product is not groceries and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("employee");
+        user.setProductType("etc");
+        user.setLongTimeJoined(2);
+        assertEquals("56.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3EmployeeCase3() {
+        // test case for user type as employee with the product is groceries and the bought amount more than 100
+    	User user = new User();
+        user.setAmount("900");
+        user.setUserType("employee");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(2);
+        assertEquals("855.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3EmployeeCase4() {
+        // test case for user type as employee with the product is groceries and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("employee");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(2);
+        assertEquals("80.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase1() {
+        // test case for user type as customer with the product is not groceries and long time joined >= 2 years and the bought amount more than 100
+    	User user = new User();
+        user.setAmount("900");
+        user.setUserType("customer");
+        user.setProductType("etc");
+        user.setLongTimeJoined(2);
+        assertEquals("810.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase2() {
+        // test case for user type as customer with the product is not groceries and long time joined >= 2 years and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("customer");
+        user.setProductType("etc");
+        user.setLongTimeJoined(2);
+        assertEquals("76.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase3() {
+        // test case for user type as customer with the product is not groceries and long time joined <= 2 years and the bought amount more than 100
+    	User user = new User();
+        user.setAmount("900");
+        user.setUserType("customer");
+        user.setProductType("etc");
+        user.setLongTimeJoined(1);
+        assertEquals("855.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase4() {
+        // test case for user type as customer with the product is not groceries and long time joined <= 2 years and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("customer");
+        user.setProductType("etc");
+        user.setLongTimeJoined(1);
+        assertEquals("80.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase5() {
+        // test case for user type as customer with the product is groceries and long time joined >= 2 years and the bought amount more than 100
+    	User user = new User();
+        user.setAmount("900");
+        user.setUserType("customer");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(2);
+        assertEquals("855.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase6() {
+        // test case for user type as customer with the product is groceries and long time joined >= 2 years and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("customer");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(2);
+        assertEquals("80.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase7() {
+        // test case for user type as customer with the product is groceries and long time joined <= 2 years and the bought amount more than 100
+    	User user = new User();
+        user.setAmount("900");
+        user.setUserType("customer");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(1);
+        assertEquals("855.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3CustomerCase8() {
+        // test case for user type as customer with the product is groceries and long time joined <= 2 years and the bought amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("customer");
+        user.setProductType("groceries");
+        user.setLongTimeJoined(1);
+        assertEquals("80.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3Case9() {
+        // test case for user type nor employee, customer, affiliate with the amount more than 100
     	User user = new User();
         user.setAmount("900");
         user.setUserType("alien");
         user.setProductType("etc");
         user.setLongTimeJoined(2);
         assertEquals("855.0", App.geneatePayableAmount(user));
+    }
+    
+    public void testAnswer3Case10() {
+        // test case for user type nor employee, customer, affiliate with the amount less than 100
+    	User user = new User();
+        user.setAmount("80");
+        user.setUserType("alien");
+        user.setProductType("etc");
+        user.setLongTimeJoined(2);
+        assertEquals("80.0", App.geneatePayableAmount(user));
     }
 }

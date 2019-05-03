@@ -24,7 +24,7 @@ public class App
     	System.out.println( "Hello World!\n" );
         Scanner sc = new Scanner(System.in);
         
-        Map<String, String> storedMap = new HashMap<String, String>();
+        Map<Integer, Map<String, String>> storedMap = new HashMap<>();
         String choose = null;
         
         do {
@@ -62,7 +62,8 @@ public class App
         } while (!choose.equals("q"));
     }
     
-    private static void store(Map<String, String> storedMap, Scanner sc) {
+    private static void store(Map<Integer, Map<String,String>> storedMap, Scanner sc) {
+    	String index = null;
     	String key = null;
     	String value = null;
     	
@@ -89,21 +90,33 @@ public class App
 //				values.add(s.split("=")[1]);
 //			}
 //		}
+    	Map<String, String> map = new HashMap<String, String>();
+    	
+    	do {
+    		System.out.print("Index : ");
+        	index = sc.nextLine();
+    	}while(index.isEmpty() && !StringUtils.isNumeric(index));
+    	
+    	String answer = null;
     	do {
     		System.out.print("Key : ");
         	key = sc.nextLine();
-    	}while(key.isEmpty());
-		
-    	do {
-    		System.out.print("Value : ");
+			
+        	System.out.print("Value : ");
         	value = sc.nextLine();	
-		} while (value.isEmpty());
+	    	
+	    	map.put(key, value);
+	    	System.out.println("add another key-value for this index "+index+" [q to quit] : ");
+	    	answer = sc.nextLine();
+    	}while (!answer.equalsIgnoreCase("q"));
     	
-    	storedMap.put(key, value);
+
+    	storedMap.put(Integer.parseInt(index), map);
     	System.out.println("stored successfully\n");
     }
     
-    public static String load(Map<String, String> storedMap) {
+    @Deprecated
+    public static String load(Map<String, String> storedMap, String asd) {
     	StringBuilder result = new StringBuilder();
     	List<String> keys = new ArrayList<String>();
     	List<String> values = new ArrayList<String>();
@@ -129,6 +142,29 @@ public class App
 			}else {
 				result.append("value"+i+"=").append(keys.get(i-1)).append("\\n");
 			}
+		}
+    	return result.toString();
+    }
+    
+    public static String load(Map<Integer,Map<String,String>> storedMap) {
+    	StringBuilder result = new StringBuilder();
+    	Integer maxLoopIdx = storedMap.size();
+    	Integer currLoopIdx = 1;
+    	for (Map.Entry<Integer, Map<String, String>> map : storedMap.entrySet()) {
+    		int maxLoopValue = map.getValue().size();
+			int currLoopValue = 1;
+			for (Map.Entry<String, String> valuemap : map.getValue().entrySet()) {
+				if (currLoopValue == maxLoopValue) {
+					result.append(valuemap.getKey()).append("=").append(valuemap.getValue());
+				}else {
+					result.append(valuemap.getKey()).append("=").append(valuemap.getValue()).append(";");
+				}
+				currLoopValue++;
+			}
+			if (currLoopIdx != maxLoopIdx) {
+				result.append("\\n");
+			}
+			currLoopIdx++;
 		}
     	return result.toString();
     }

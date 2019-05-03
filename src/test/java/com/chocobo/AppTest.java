@@ -3,7 +3,6 @@ package com.chocobo;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -51,12 +50,14 @@ public class AppTest
 //        System.setIn(new ByteArrayInputStream(userInteract.getBytes()));
 //        App.start();
         
+    	// test case with one row on map
         Map<String, String> storedMap = new HashMap<String, String>();
         storedMap.put("key1", "value1");
         assertEquals("key1=key1\\nvalue1=key1", App.load(storedMap));
     }
     
     public void testAnswer1Case2() {
+    	// test case with two rows on map
     	Map<String, String> storedMap = new HashMap<String, String>();
         storedMap.put("key1", "value1");
         storedMap.put("key2", "value2");
@@ -64,6 +65,7 @@ public class AppTest
     }
     
     public void testAnswer1Case3() {
+    	// test case with three rows on map
     	Map<String, String> storedMap = new HashMap<String, String>();
         storedMap.put("key1", "value1");
         storedMap.put("key2", "value2");
@@ -75,7 +77,8 @@ public class AppTest
 //    	String userInteract = "2\nq";
 //        System.setIn(new ByteArrayInputStream(userInteract.getBytes()));
 //        App.start();
-        
+    	
+        // there are no coverage for this since i dont know the answer
     }
     
     public void testAnswer3Case1() {
